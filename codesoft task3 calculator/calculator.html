@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            width: 300px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #display {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 20px;
+            padding: 0px;
+            font-size: 24px;
+            text-align: right;
+            border: none;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+
+        button {
+            height: 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .operator {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .operator:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <button class="operator" id="clear">C</button>
+            <button class="operator" id="backspace">←</button>
+            <button class="operator" id="divide">/</button>
+            <button class="operator" id="multiply">*</button>
+            <button class="number" id="seven">7</button>
+            <button class="number" id="eight">8</button>
+            <button class="number" id="nine">9</button>
+            <button class="operator" id="subtract">-</button>
+            <button class="number" id="four">4</button>
+            <button class="number" id="five">5</button>
+            <button class="number" id="six">6</button>
+            <button class="operator" id="add">+</button>
+            <button class="number" id="one">1</button>
+            <button class="number" id="two">2</button>
+            <button class="number" id="three">3</button>
+            <button class="operator" id="equals">=</button>
+            <button class="number" id="decimal">.</button>
+            <button class="number" id="zero">0</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('.buttons button');
+
+        let currentNumber = '';
+        let previousNumber = '';
+        let operator = '';
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+
+                // Handle numbers
+                if (!isNaN(value) || value === '.') {
+                    currentNumber += value;
+                    display.value = currentNumber;
+                }
+                // Handle operators
+                else if (['+', '-', '*', '/'].includes(value)) {
+                    if (currentNumber !== '') {
+                        previousNumber = currentNumber;
+                        currentNumber = '';
+                        operator = value;
+                    }
+                }
+                // Handle equals
+                else if (value === '=') {
+                    if (previousNumber !== '' && currentNumber !== '') {
+                        const result = calculate(previousNumber, currentNumber, operator);
+                        display.value = result;
+                        previousNumber = '';
+                        currentNumber = result;
+                    }
+                }
+                // Handle clear
+                else if (value === 'C') {
+                    display.value = '';
+                    previousNumber = '';
+                    currentNumber = '';
+                }
+                // Handle backspace
+                else if (value === '←') {
+                    currentNumber = currentNumber.slice(0, -1);
+                    display.value = currentNumber;
+                }
+            });
+        });
+
+        function calculate(num1, num2, operator) {
+            const n1 = parseFloat(num1);
+            const n2 = parseFloat(num2);
+            
+            switch (operator) {
+                case '+':
+                    return n1 + n2;
+                case '-':
+                    return n1 - n2;
+                case '*':
+                    return n1 * n2;
+                case '/':
+                    return n2 !== 0 ? n1 / n2 : 'Error'; // Handle division by zero
+                default:
+                    return '';
+            }
+        }
+    </script>
+</body>
+</html>
